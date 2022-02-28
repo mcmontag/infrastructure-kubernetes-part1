@@ -1,1 +1,26 @@
-COPY VALUES FROM previous excerise  'pod_2.yml'
+apiVersion: v1
+kind: Pod
+metadata:
+  name: labeled-pod
+  labels:
+    app_name: nginx
+    env: dev
+spec:
+  containers:
+  - name: pod-nginx
+    image: nginx:stable-alpine
+    ports:
+    - containerPort: 80
+    volumeMounts:
+    - name: html-content
+      mountPath: /usr/share/nginx/html
+  - name: pod-content
+    image: alpine:latest
+    volumeMounts:
+    - name: html-content
+      mountPath: /html
+    command: ["/bin/sh"]
+    args: ["-c", "while true; do echo 'current time<br/>'$(date)'<br/>' >> /html/index.html; sleep 5; done"]
+  volumes:
+  - name: html-content
+    emptyDir: {}
